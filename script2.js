@@ -1,72 +1,122 @@
-const apiKey = 'AIzaSyBLOOYaN0zUBPUkA0FyPot1QL-LFWCpEzc';  // Replace with your Google API key
-const spreadsheetId = '1a4JmwnRPvVHOh5BNOZ-F_sqspasdcowRB7uF-qScd48';  // Replace with your spreadsheet ID
-const range = 'Sheet2!A1:I500';
-// Sample employee data
-const employees = [
-    {
-        name: "John Doe",
-        department: "IT",
-        position: "Software Engineer",
-        photo: "john_doe.jpg",
-        details: "John has 5 years of experience in software development."
-    },
-    {
-        name: "Jane Smith",
-        department: "HR",
-        position: "HR Manager",
-        photo: "jane_smith.jpg",
-        details: "Jane specializes in employee relations and recruitment."
-    },
-    {
-        name: "David Brown",
-        department: "Finance",
-        position: "Accountant",
-        photo: "david_brown.jpg",
-        details: "David is skilled in financial analysis and budgeting."
+const apiKey = 'AIzaSyBLOOYaN0zUBPUkA0FyPot1QL-LFWCpEzc'; // Replace with your Google API key
+const spreadsheetId = '1a4JmwnRPvVHOh5BNOZ-F_sqspasdcowRB7uF-qScd48'; // Replace with your spreadsheet ID
+const range = 'Sheet2!A1:I500'; // Adjust the range as needed
+
+// Fetch data from Google Sheets and display the table
+async function fetchTableData() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.values && data.values.length > 0) {
+            const [headers, ...rows] = data.values;
+            displayHeaders(headers);
+            displayTableData(rows);
+        } else {
+            console.error('No data found in the spreadsheet.');
+            alert('No data found in the spreadsheet.');
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        alert('Error fetching data. Please check your API key or spreadsheet ID.');
     }
-];
+}
 
-// Populate table with employee data
-const tableBody = document.getElementById("table-body");
+// Dynamically display table headers with sorting symbols for all columns
+function displayHeaders(headers) {
+    const tableHeaders = document.getElementById('table-headers');
+    tableHeaders.innerHTML = '';
+    headers.forEach((header, index) => {
+        const th = document.createElement('th');
+        th.innerHTML = `${header} <span class="sort-symbol"></span>`;
+        th.onclick = () => sortTable(index, th);
+        tableHeaders.appendChild(th);
+    });
+}
 
-employees.forEach((employee, index) => {
-    const row = document.createElement("tr");
-    row.setAttribute("data-index", index);
-    row.innerHTML = `
-        <td>${employee.name}</td>
-        <td>${employee.department}</td>
-        <td>${employee.position}</td>
+// Dynamically display table rows
+function displayTableData(rows) {
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = '';
+    rows.forEach((row, rowIndex) => {
+        const tr = document.createElement('tr');
+        row.forEach(cellData => {
+            const td = document.createElement('td');
+            td.textContent = cellData || '';
+            tr.appendChild(td);
+        });
+        tr.onclick = () => showPopup(rows[rowIndex]); // Add click listener for the popup
+        tableBody.appendChild(tr);
+    });
+}
+
+// Sort table data by column and update sorting symbols
+function sortTable(columnIndex, headerElement) {
+    const tableBody = document.getElementById('table-body');
+    const rows = Array.from(tableBody.rows);
+    const isAscending = headerElement.getAttribute('data-sort') !== 'asc';
+
+    rows.sort((rowA, rowB) => {
+        const cellA = rowA.cells[columnIndex].textContent.toLowerCase();
+        const cellB = rowB.cells[columnIndex].textContent.toLowerCase();
+
+        if (!isNaN(cellA) && !isNaN(cellB)) {
+            return isAscending ? cellA - cellB : cellB - cellA;
+        }
+        return isAscending
+            ? cellA.localeCompare(cellB)
+            : cellB.localeCompare(cellA);
+    });
+
+    tableBody.innerHTML = '';
+    tableBody.append(...rows);
+
+    // Reset all headers' sort symbols
+    document.querySelectorAll('.sort-symbol').forEach(span => {
+        span.textContent = '';
+    });
+
+    // Update the clicked header's sort symbol
+    headerElement.querySelector('.sort-symbol').textContent = isAscending ? '▲' : '▼';
+    headerElement.setAttribute('data-sort', isAscending ? 'asc' : 'desc');
+}
+
+// Filter table data based on search input
+function filterTable() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#table-body tr');
+    rows.forEach(row => {
+        const cells = row.getElementsByTagName('td');
+        const match = Array.from(cells).some(cell =>
+            cell.textContent.toLowerCase().includes(input)
+        );
+        row.style.display = match ? '' : 'none';
+    });
+}
+
+// Show popup with additional row data
+function showPopup(rowData) {
+    const popup = document.getElementById('popup');
+    const popupContent = document.getElementById('popup-content');
+
+    // Dynamically populate popup content
+    popupContent.innerHTML = `
+        <span class="close-btn" onclick="closePopup()">&times;</span>
+        <h2>Details</h2>
+        <ul>
+            ${rowData.map(data => `<li>${data}</li>`).join('')}
+        </ul>
     `;
-    row.addEventListener("click", () => showPopup(index));
-    tableBody.appendChild(row);
-});
 
-// Show popup with employee details
-function showPopup(index) {
-    const employee = employees[index];
-    document.getElementById("popup-photo").src = employee.photo;
-    document.getElementById("popup-name").textContent = employee.name;
-    document.getElementById("popup-details").textContent = employee.details;
-    document.getElementById("popup").classList.remove("hidden");
+    popup.classList.remove('hidden');
 }
 
 // Close popup
 function closePopup() {
-    document.getElementById("popup").classList.add("hidden");
+    const popup = document.getElementById('popup');
+    popup.classList.add('hidden');
 }
 
-// Filter employees
-function filterable() {
-    const query = document.getElementById("searching").value.toLowerCase();
-    const rows = document.querySelectorAll("#table-body tr");
-    rows.forEach((row) => {
-        const name = row.children[0].textContent.toLowerCase();
-        const department = row.children[1].textContent.toLowerCase();
-        const position = row.children[2].textContent.toLowerCase();
-        if (name.includes(query) || department.includes(query) || position.includes(query)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-    });
-}
+// Fetch and display data on page load
+fetchTableData();
