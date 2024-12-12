@@ -15,7 +15,7 @@ body {
 
 /* Main Container */
 .container {
-    width: 85%;
+    width: 90%;
     /*max-width: 1200px;*/
     margin: auto;
     text-align: center;
@@ -38,7 +38,7 @@ h1 {
 /* Search Input Styling */
 #searchInput {
     padding: 12px;
-    width: 100%;
+    width: 90%;
     max-width: 400px;
     margin-bottom: 20px;
     border-radius: 8px;
@@ -121,7 +121,7 @@ tr:hover {
     max-height: 50%;
     max-width: 50%;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-    top: 30%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
