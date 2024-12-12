@@ -1,4 +1,95 @@
-/* Popup styling */
+/* General Body and Container Style */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: url('https://www.w3schools.com/w3images/forestbridge.jpg') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure full screen height */
+    text-align: center;
+}
+
+/* Main Container */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.2); /* Slight transparency */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Title Style */
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* Search Input Styling */
+#searchInput {
+    padding: 12px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1rem;
+    position: relative;
+}
+
+#searchInput::placeholder {
+    color: white;
+}
+
+/* Table Container Style with Glassmorphism Effect */
+.table-container {
+    background: rgba(255, 255, 255, 0.1); /* Translucent background */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 1rem;
+}
+
+th {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+td {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+tr:nth-child(even) td {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+tr:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+}
+
+/* Popup Styling (Frosted Glass Effect) */
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -18,20 +109,16 @@
     overflow-y: auto;
     position: fixed;
     z-index: 10;
-    background: white;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2); /* Frosted glass effect */
+    backdrop-filter: blur(8px); /* Glassmorphism */
+    border-radius: 10px;
     padding: 20px;
     max-height: 50%;
     max-width: 50%;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-
-.popup-content {
-    text-align: left;
-    color: black;
 }
 
 .close-btn {
@@ -49,99 +136,4 @@
 
 .close-btn:hover {
     color: #ff0000;
-}
-
-    /* General Body and Container Style */
-body {
-    font-family: Arial, sans-serif;
-    background: url('https://www.w3schools.com/w3images/forestbridge.jpg') no-repeat center center fixed;
-    background-size: cover;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50vh;
-    color: white;
-}
-.container {
-    width: 85%;
-    margin: auto;
-    text-align: center;
-}
-
-/* Title Style */
-.title {
-    font-size: 2rem;
-    margin-bottom: 20px;
-}
-
-/* Search Input Styling */
-#searchInput {
-    padding: 10px;
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    border: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-}
-
-/* Table Container Style with Glassmorphism Effect */
-.table-container {
-    background: rgba(255, 255, 255, 0.1); /* Translucent background */
-    backdrop-filter: blur(10px); /* Frosted glass effect */
-    border-radius: 25px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    overflow: hidden;
-}
-
-/* Wrapper around the table for enabling scrolling */
-.table-wrapper {
-    overflow-y: auto;
-    max-height: 600px; /* Set a fixed height to enable scrolling */
-}
-
-/* Table Styling */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    
-}
-
-/* Table Header Styling */
-th {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 12px 15px;
-    font-size: 1rem;
-    font-weight: bold;
-    color: white;
-    
-    
-}
-
-/* Table Cell Styling */
-td {
-    padding: 12px 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Hover Effect for Rows */
-tr:hover {
-    background: rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    table {
-        font-size: 0.9rem;
-    }
-
-    th, td {
-        padding: 10px;
-    }
 }
