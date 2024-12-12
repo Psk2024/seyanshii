@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESIC TELANGANA STAFF LIST1</title>
+    <title>ESIC Telangana Staff List</title>
     <link rel="stylesheet" href="style2.css">
 </head>
 <body>
-    
     <div class="container">
         <img src="esic2.png" alt="ESIC Logo" height="150" width="150">
-        <h1>STAFF LIST, TELANGANA</h1>
+        <h1>Staff List, Telangana</h1>
         <input type="text" id="searchInput" placeholder="Search employees..." oninput="filterTable()">
-        <div class="table-container" id="sortableTable">
+        <div class="table-container">
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr id="table-headers">
+                            <!-- Headers will be dynamically inserted here -->
+                        </tr>
                     </thead>
                     <tbody id="table-body">
                         <!-- Employee data rows will be dynamically inserted here -->
@@ -25,12 +26,14 @@
             </div>
         </div>
     </div>
-<!-- Popup Modal -->
-<div id="popup" class="popup hidden">
-    <div id="popup-content" class="popup-content">
-        <!-- Dynamic content will be injected here -->
+
+    <!-- Popup and overlay -->
+    <div id="popup" class="popup hidden">
+        <span class="close-btn" onclick="closePopup()">&times;</span>
+        <div id="popup-content" class="popup-content"></div>
     </div>
-</div>
+    <div id="popup-overlay" class="popup-overlay hidden" onclick="closePopup()"></div>
+
     <script src="script2.js"></script>
 </body>
 </html>
