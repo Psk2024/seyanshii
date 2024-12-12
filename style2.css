@@ -24,6 +24,10 @@ body {
     padding: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+.table-wraper {
+    overflow-y:auto;
+    max-height: 600px;
+}
 
 /* Title Style */
 h1 {
