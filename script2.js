@@ -1,10 +1,11 @@
 const apiKey = 'AIzaSyBLOOYaN0zUBPUkA0FyPot1QL-LFWCpEzc'; // Replace with your Google API key
 const spreadsheetId = '1a4JmwnRPvVHOh5BNOZ-F_sqspasdcowRB7uF-qScd48'; // Replace with your spreadsheet ID
-const range = 'Sheet2!A1:I500'; // Adjust the range as needed
+const mainRange = 'Sheet2!A1:I500'; // Adjust the main sheet range as needed
+const secondaryRange = 'Sheet3!A1:I500'; // Adjust the second sheet range as needed
 
-// Fetch data from Google Sheets and display the table
+// Fetch data from Google Sheets and display the main table
 async function fetchTableData() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+    const url = https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${mainRange}?key=${apiKey};
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -23,15 +24,88 @@ async function fetchTableData() {
     }
 }
 
+// Fetch data for the secondary sheet
+async function fetchSecondarySheetData(rowId) {
+    const url = https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${secondaryRange}?key=${apiKey};
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.values && data.values.length > 0) {
+            // Extract headers and rows from the secondary sheet
+            const [headers, ...rows] = data.values;
+
+            // Find the relevant data for the clicked row (if rowId is relevant to your logic)
+            const relevantData = rows[rowId] || rows[0];
+
+            showPopupWithSecondaryData(headers, relevantData);
+        } else {
+            console.error('No data found in the secondary sheet.');
+            alert('No data found in the secondary sheet.');
+        }
+    } catch (error) {
+        console.error('Error fetching secondary sheet data:', error);
+        alert('Error fetching secondary sheet data.');
+    }
+}
+
 // Dynamically display table headers with sorting symbols for all columns
 function displayHeaders(headers) {
     const tableHeaders = document.getElementById('table-headers');
     tableHeaders.innerHTML = '';
     headers.forEach((header, index) => {
         const th = document.createElement('th');
-        th.innerHTML = `${header} <span class="sort-symbol"></span>`;
+        th.innerHTML = ${header} <span class="sort-symbol"></span>;
         th.onclick = () => sortTable(index, th);
         tableHeaders.appendChild(th);
+    });
+}// Global variable to hold the full table data
+let allRowsData = [];
+
+// Fetch data from Google Sheets and display the main table
+async function fetchTableData() {
+    const url = https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${mainRange}?key=${apiKey};
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.values && data.values.length > 0) {
+            const [headers, ...rows] = data.values;
+            displayHeaders(headers);
+            allRowsData = rows;  // Store all rows data globally
+            displayTableData(rows);
+        } else {
+            console.error('No data found in the spreadsheet.');
+            alert('No data found in the spreadsheet.');
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        alert('Error fetching data. Please check your API key or spreadsheet ID.');
+    }
+}
+
+// Function to filter rows based on the search input
+function filterTable() {
+    const searchQuery = document.getElementById('search-input').value.toLowerCase();
+    const filteredRows = allRowsData.filter(row => 
+        row.some(cell => cell.toLowerCase().includes(searchQuery))
+    );
+    displayTableData(filteredRows);
+}
+
+// Dynamically display table rows based on the filtered data
+function displayTableData(rows) {
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = ''; // Clear the existing rows
+    rows.forEach((row, rowIndex) => {
+        const tr = document.createElement('tr');
+        row.forEach(cellData => {
+            const td = document.createElement('td');
+            td.textContent = cellData || '';
+            tr.appendChild(td);
+        });
+        tr.onclick = () => fetchSecondarySheetData(rowIndex); // Fetch secondary sheet data on row click
+        tableBody.appendChild(tr);
     });
 }
 
@@ -46,67 +120,34 @@ function displayTableData(rows) {
             td.textContent = cellData || '';
             tr.appendChild(td);
         });
-        tr.onclick = () => showPopup(rows[rowIndex]); // Add click listener for the popup
+        tr.onclick = () => fetchSecondarySheetData(rowIndex); // Fetch secondary sheet data on row click
         tableBody.appendChild(tr);
     });
 }
 
-// Sort table data by column and update sorting symbols
-function sortTable(columnIndex, headerElement) {
-    const tableBody = document.getElementById('table-body');
-    const rows = Array.from(tableBody.rows);
-    const isAscending = headerElement.getAttribute('data-sort') !== 'asc';
-
-    rows.sort((rowA, rowB) => {
-        const cellA = rowA.cells[columnIndex].textContent.toLowerCase();
-        const cellB = rowB.cells[columnIndex].textContent.toLowerCase();
-
-        if (!isNaN(cellA) && !isNaN(cellB)) {
-            return isAscending ? cellA - cellB : cellB - cellA;
-        }
-        return isAscending
-            ? cellA.localeCompare(cellB)
-            : cellB.localeCompare(cellA);
-    });
-
-    tableBody.innerHTML = '';
-    tableBody.append(...rows);
-
-    // Reset all headers' sort symbols
-    document.querySelectorAll('.sort-symbol').forEach(span => {
-        span.textContent = '';
-    });
-
-    // Update the clicked header's sort symbol
-    headerElement.querySelector('.sort-symbol').textContent = isAscending ? '▲' : '▼';
-    headerElement.setAttribute('data-sort', isAscending ? 'asc' : 'desc');
-}
-
-// Filter table data based on search input
-function filterTable() {
-    const input = document.getElementById('searchInput').value.toLowerCase();
-    const rows = document.querySelectorAll('#table-body tr');
-    rows.forEach(row => {
-        const cells = row.getElementsByTagName('td');
-        const match = Array.from(cells).some(cell =>
-            cell.textContent.toLowerCase().includes(input)
-        );
-        row.style.display = match ? '' : 'none';
-    });
-}
-
-// Show popup with additional row data
-function showPopup(rowData) {
+function showPopupWithSecondaryData(headers, rowData) {
     const popup = document.getElementById('popup');
     const popupContent = document.getElementById('popup-content');
 
-    // Dynamically populate popup content
+    // Create a vertical table structure with the first column as the heading
+    const verticalTable = headers.map((header, index) => {
+        return `
+            <tr>
+                <th>${header}</th>
+                <td>${rowData[index] || ''}</td>
+            </tr>
+        `;
+    }).join('');
+
+    // Populate the popup with the new table
     popupContent.innerHTML = `
         <span class="close-btn" onclick="closePopup()">&times;</span>
         <h2>Details</h2>
-        <ul>
-            ${rowData.map(data => `<li>${data}</li>`).join('')}
-        </ul>
+        <table>
+            <tbody>
+                ${verticalTable}
+            </tbody>
+        </table>
     `;
 
     popup.classList.remove('hidden');
