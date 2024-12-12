@@ -15,7 +15,7 @@ body {
 
 /* Main Container */
 .container {
-    width: 90%;
+    width: 85%;
     /*max-width: 1200px;*/
     margin: auto;
     text-align: center;
@@ -141,4 +141,12 @@ tr:hover {
 
 .close-btn:hover {
     color: #ff0000;
+}
+@media (max-width:768px) {
+    table {
+        font-size: 0.9rem;
+    }
+    th, td {
+        padding: 10;
+    }
 }
