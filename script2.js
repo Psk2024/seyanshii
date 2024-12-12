@@ -121,5 +121,5 @@ function closePopup() {
     popup.classList.add('hidden');
 }
 
-// Fetch and display data on page load
+// Fetchd and display data on page load
 fetchTableData();
