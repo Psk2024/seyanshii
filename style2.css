@@ -16,7 +16,7 @@ body {
 /* Main Container */
 .container {
     width: 90%;
-    max-width: 1200px;
+    /*max-width: 1200px;*/
     margin: auto;
     text-align: center;
     /* background: rgba(255, 255, 255, 0.2); /* Slight transparency */
