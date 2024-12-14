@@ -104,7 +104,7 @@ function showPopupWithSecondaryData(headers, rowData) {
     // Populate the popup with the new table
     popupContent.innerHTML = `
         <span class="close-btn" onclick="closePopup()">&times;</span>
-        <h2>Details</h2>
+        <h2>${rowData[1]}</h2>
         <table>
             <tbody>
                 ${verticalTable}
