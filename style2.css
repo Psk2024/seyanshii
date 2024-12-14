@@ -9,8 +9,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Ensure full screen height */
-    text-align: center;
+    height: 50vh; /* Ensure full screen height */
+    
 }
 
 /* Main Container */
