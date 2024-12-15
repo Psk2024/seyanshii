@@ -1,7 +1,7 @@
 const apiKey = 'AIzaSyBLOOYaN0zUBPUkA0FyPot1QL-LFWCpEzc'; // Replace with your Google API key
 const spreadsheetId = '1a4JmwnRPvVHOh5BNOZ-F_sqspasdcowRB7uF-qScd48'; // Replace with your spreadsheet ID
-const mainRange = 'Sheet2!A1:I500'; // Adjust the main sheet range as needed
-const secondaryRange = 'Sheet3!A1:I500'; // Adjust the second sheet range as needed
+const mainRange = 'Sheet2!A1:F500'; // Adjust the main sheet range as needed
+const secondaryRange = 'Sheet2!G1:H500'; // Adjust the second sheet range as needed
 
 // Global variable to hold the full table data
 let allRowsData = [];
